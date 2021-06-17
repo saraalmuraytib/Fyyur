@@ -9,7 +9,5 @@ DEBUG = True
 # Connect to the database
 
 
-# TODO IMPLEMENT DATABASE URL -Done- 
-SQLALCHEMY_DATABASE_URI = 'postgresql://sara@localhost:5432/fyyur'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+# TODO IMPLEMENT DATABASE URL
+SQLALCHEMY_DATABASE_URI = '<Put your local database url>'
