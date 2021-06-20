@@ -62,7 +62,7 @@ class Artist(db.Model):
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
     website_link = db.Column(db.String(120))
-    seeking_venue = db.Column(db.Boolean,default=False)
+    looking_for_venues = db.Column(db.Boolean,default=False)
     seeking_description=db.Column(db.String(500))
 
     shows = db.relationship('Show', backref="artist", lazy=True)
