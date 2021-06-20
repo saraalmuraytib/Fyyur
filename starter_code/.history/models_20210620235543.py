@@ -20,7 +20,7 @@ class Venue(db.Model):
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
     genres = db.Column(db.ARRAY(db.String()))
-    website_link = db.Column(db.String(500))
+    website_link = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean,default=False)
     seeking_description=db.Column(db.String(500))
     
