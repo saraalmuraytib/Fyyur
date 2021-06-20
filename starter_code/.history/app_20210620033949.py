@@ -84,6 +84,7 @@ def venues():
   # }]
   data=[]
   cities = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state)
+
   for city in cities:
         venues = db.session.query(Venue.id, Venue.name).filter(Venue.city == city[0]).filter(Venue.state == city[1])
         data.append({

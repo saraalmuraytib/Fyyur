@@ -61,29 +61,30 @@ def venues():
   # Note: Venues should continue to be displayed in groups by city and state.
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  # data=[{
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "venues": [{
-  #     "id": 1,
-  #     "name": "The Musical Hop",
-  #     "num_upcoming_shows": 0,
-  #   }, {
-  #     "id": 3,
-  #     "name": "Park Square Live Music & Coffee",
-  #     "num_upcoming_shows": 1,
-  #   }]
-  # }, {
-  #   "city": "New York",
-  #   "state": "NY",
-  #   "venues": [{
-  #     "id": 2,
-  #     "name": "The Dueling Pianos Bar",
-  #     "num_upcoming_shows": 0,
-  #   }]
-  # }]
-  data=[]
+  data=[{
+    "city": "San Francisco",
+    "state": "CA",
+    "venues": [{
+      "id": 1,
+      "name": "The Musical Hop",
+      "num_upcoming_shows": 0,
+    }, {
+      "id": 3,
+      "name": "Park Square Live Music & Coffee",
+      "num_upcoming_shows": 1,
+    }]
+  }, {
+    "city": "New York",
+    "state": "NY",
+    "venues": [{
+      "id": 2,
+      "name": "The Dueling Pianos Bar",
+      "num_upcoming_shows": 0,
+    }]
+  }]
+  #data=[]
   cities = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state)
+
   for city in cities:
         venues = db.session.query(Venue.id, Venue.name).filter(Venue.city == city[0]).filter(Venue.state == city[1])
         data.append({
@@ -235,7 +236,7 @@ def create_venue_submission():
     genres = request.form.getlist('genres')
     image_link = request.form['image_link']
     facebook_link = request.form['facebook_link']
-    website_link = request.form['website_link']
+    website = request.form['website_link']
     seeking_talent = True if 'seeking_talent' in request.form else False
     seeking_description = request.form['seeking_description']
     venue = Venue(name=name,
@@ -246,7 +247,7 @@ def create_venue_submission():
                   genres=genres,
                   facebook_link=facebook_link,
                   image_link=image_link,
-                  website_link=website_link,
+                  website=website,
                   seeking_talent=seeking_talent,
                   seeking_description=seeking_description)
     db.session.add(venue)
@@ -262,6 +263,8 @@ def create_venue_submission():
   finally:
     db.session.close()
 
+  
+  
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   return render_template('pages/home.html')
 

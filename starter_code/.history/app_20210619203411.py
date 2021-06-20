@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-import sys
+
 import json
 import dateutil.parser
 import babel
@@ -61,35 +61,36 @@ def venues():
   # Note: Venues should continue to be displayed in groups by city and state.
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  # data=[{
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "venues": [{
-  #     "id": 1,
-  #     "name": "The Musical Hop",
-  #     "num_upcoming_shows": 0,
-  #   }, {
-  #     "id": 3,
-  #     "name": "Park Square Live Music & Coffee",
-  #     "num_upcoming_shows": 1,
-  #   }]
-  # }, {
-  #   "city": "New York",
-  #   "state": "NY",
-  #   "venues": [{
-  #     "id": 2,
-  #     "name": "The Dueling Pianos Bar",
-  #     "num_upcoming_shows": 0,
-  #   }]
-  # }]
+  data=[{
+    "city": "San Francisco",
+    "state": "CA",
+    "venues": [{
+      "id": 1,
+      "name": "The Musical Hop",
+      "num_upcoming_shows": 0,
+    }, {
+      "id": 3,
+      "name": "Park Square Live Music & Coffee",
+      "num_upcoming_shows": 1,
+    }]
+  }, {
+    "city": "New York",
+    "state": "NY",
+    "venues": [{
+      "id": 2,
+      "name": "The Dueling Pianos Bar",
+      "num_upcoming_shows": 0,
+    }]
+  }]
   data=[]
   cities = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state)
+  
   for city in cities:
         venues = db.session.query(Venue.id, Venue.name).filter(Venue.city == city[0]).filter(Venue.state == city[1])
         data.append({
           "city": city[0],
           "state": city[1],
-          "venues": venues,
+          "venues": venues
         })
   return render_template('pages/venues.html', areas=data);
 
@@ -99,39 +100,21 @@ def search_venues():
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
   search_term=request.form.get('search_term', '')
-  venues = Venue.query.filter(
-        Venue.name.ilike("%{}%".format(search_term))).all()
-  data = []
-  for venue in venues:
-    data.append({
-      "id": venue.id,
-      "name": venue.name,
-      "num_upcoming_shows": venue.num_upcoming_shows
-  })
+
   response={
-    "count": len(data),
-    "data": data
+    "count": 1,
+    "data": [{
+      "id": 2,
+      "name": "The Dueling Pianos Bar",
+      "num_upcoming_shows": 0,
+    }]
   }
-  # response={
-  #   "count": 1,
-  #   "data": [{
-  #     "id": 2,
-  #     "name": "The Dueling Pianos Bar",
-  #     "num_upcoming_shows": 0,
-  #   }]
-  # }
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
-
-  venue = Venue.query.get(venue_id)
-  # if not venue: 
-  #   return render_template('errors/404.html')
-
-  
   data1={
     "id": 1,
     "name": "The Musical Hop",
@@ -212,8 +195,6 @@ def show_venue(venue_id):
   data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
   return render_template('pages/show_venue.html', venue=data)
 
-
-#  ----------------------------------------------------------------
 #  Create Venue
 #  ----------------------------------------------------------------
 
@@ -226,42 +207,11 @@ def create_venue_form():
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
-  try:
-    name = request.form['name']
-    city = request.form['city']
-    state = request.form['state']
-    address = request.form['address']
-    phone = request.form['phone']
-    genres = request.form.getlist('genres')
-    image_link = request.form['image_link']
-    facebook_link = request.form['facebook_link']
-    website_link = request.form['website_link']
-    seeking_talent = True if 'seeking_talent' in request.form else False
-    seeking_description = request.form['seeking_description']
-    venue = Venue(name=name,
-                  city=city,
-                  state=state,
-                  address=address,
-                  phone=phone,
-                  genres=genres,
-                  facebook_link=facebook_link,
-                  image_link=image_link,
-                  website_link=website_link,
-                  seeking_talent=seeking_talent,
-                  seeking_description=seeking_description)
-    db.session.add(venue)
-    db.session.commit()
-    # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-  except:
-    db.session.rollback()
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    print(sys.exc_info())
-    flash('An error occurred. Venue ' + request.form['name']+ ' could not be listed. hi')
-  finally:
-    db.session.close()
 
+  # on successful db insert, flash success
+  flash('Venue ' + request.form['name'] + ' was successfully listed!')
+  # TODO: on unsuccessful db insert, flash an error instead.
+  # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   return render_template('pages/home.html')
 

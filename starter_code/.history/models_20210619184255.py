@@ -1,6 +1,5 @@
 
 from app import db
-from datetime import datetime
 
 #----------------------------------------------------------------------------#
 # Models.
@@ -19,33 +18,15 @@ class Venue(db.Model):
     facebook_link = db.Column(db.String(120))
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
-    genres = db.Column(db.String(120)) 
+    genres = db.Column(db.String(120),default=False) # IDK
     website_link = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean,default=False)
+    looking_for_talent = db.Column(db.Boolean,default=False)
     seeking_description=db.Column(db.String(500))
     
     shows = db.relationship('Show', backref="venue", lazy=True)
     
     def __repr__(self):
         return f'<Venue ID: {self.id}, Venue Name: {self.name}>'
-    
-    @property 
-    def upcoming_shows(self):
-      upcoming_shows = [show for show in self.shows if show.start_time > datetime.now()] 
-      return upcoming_shows
-    
-    @property
-    def num_upcoming_shows(self):
-      return len(self.upcoming_shows)
-    
-    @property
-    def past_shows(self):
-      past_shows = [show for show in self.shows if show.start_time < datetime.now()] # thats mean past show 
-      return past_shows
-    
-    @property
-    def num_past_shows(self):
-      return len(self.past_shows)
 
 
 class Artist(db.Model):

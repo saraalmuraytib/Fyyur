@@ -61,29 +61,30 @@ def venues():
   # Note: Venues should continue to be displayed in groups by city and state.
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  # data=[{
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "venues": [{
-  #     "id": 1,
-  #     "name": "The Musical Hop",
-  #     "num_upcoming_shows": 0,
-  #   }, {
-  #     "id": 3,
-  #     "name": "Park Square Live Music & Coffee",
-  #     "num_upcoming_shows": 1,
-  #   }]
-  # }, {
-  #   "city": "New York",
-  #   "state": "NY",
-  #   "venues": [{
-  #     "id": 2,
-  #     "name": "The Dueling Pianos Bar",
-  #     "num_upcoming_shows": 0,
-  #   }]
-  # }]
-  data=[]
+  data=[{
+    "city": "San Francisco",
+    "state": "CA",
+    "venues": [{
+      "id": 1,
+      "name": "The Musical Hop",
+      "num_upcoming_shows": 0,
+    }, {
+      "id": 3,
+      "name": "Park Square Live Music & Coffee",
+      "num_upcoming_shows": 1,
+    }]
+  }, {
+    "city": "New York",
+    "state": "NY",
+    "venues": [{
+      "id": 2,
+      "name": "The Dueling Pianos Bar",
+      "num_upcoming_shows": 0,
+    }]
+  }]
+  #data=[]
   cities = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state)
+
   for city in cities:
         venues = db.session.query(Venue.id, Venue.name).filter(Venue.city == city[0]).filter(Venue.state == city[1])
         data.append({
@@ -226,42 +227,28 @@ def create_venue_form():
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
+  new_venue = Venue()
+  new_venue.name = request.form['name']
+  new_venue.city = request.form['city']
+  new_venue.state = request.form['state']
+  new_venue.address = request.form['address']
+  new_venue.phone = request.form['phone']
+  new_venue.facebook_link = request.form['facebook_link']
+  new_venue.genres = request.form['genres']
+  new_venue.website_link = request.form['website_link']
+  new_venue.image_link = request.form['image_link']
   try:
-    name = request.form['name']
-    city = request.form['city']
-    state = request.form['state']
-    address = request.form['address']
-    phone = request.form['phone']
-    genres = request.form.getlist('genres')
-    image_link = request.form['image_link']
-    facebook_link = request.form['facebook_link']
-    website_link = request.form['website_link']
-    seeking_talent = True if 'seeking_talent' in request.form else False
-    seeking_description = request.form['seeking_description']
-    venue = Venue(name=name,
-                  city=city,
-                  state=state,
-                  address=address,
-                  phone=phone,
-                  genres=genres,
-                  facebook_link=facebook_link,
-                  image_link=image_link,
-                  website_link=website_link,
-                  seeking_talent=seeking_talent,
-                  seeking_description=seeking_description)
-    db.session.add(venue)
+    db.session.add(new_venue)
     db.session.commit()
     # on successful db insert, flash success
     flash('Venue ' + request.form['name'] + ' was successfully listed!')
   except:
     db.session.rollback()
     # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    print(sys.exc_info())
-    flash('An error occurred. Venue ' + request.form['name']+ ' could not be listed. hi')
+    flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
+  # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   finally:
     db.session.close()
-
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   return render_template('pages/home.html')
 
