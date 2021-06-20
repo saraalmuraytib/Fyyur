@@ -8,7 +8,7 @@ Fyyur is a musical venue and artist booking site that facilitates the discovery 
  * **Python3** and **Flask** as our server language and server framework
  * **Flask-Migrate** for creating and running schema migrations
 
-### 2. Frontend Dependencies
+### Frontend Dependencies
 * **HTML**
 * **CSS** 
 *  **Javascript with Bootstrap 3** 
