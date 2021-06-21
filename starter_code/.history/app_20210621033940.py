@@ -2,6 +2,7 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
+from models import *
 import sys
 import json
 import dateutil.parser
@@ -98,7 +99,8 @@ def search_venues():
     search_term = request.form.get('search_term', '')
 
     # Using ilike helps to allows for case insensitive pattern matching
-    venues = Venue.query.filter(Venue.name.ilike("%{}%".format(search_term))).all()
+    venues = Venue.query.filter(
+        Venue.name.ilike("%{}%".format(search_term))).all()
     data = []
     for venue in venues:
         data.append({
